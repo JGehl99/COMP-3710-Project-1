@@ -7,7 +7,7 @@ import random
 # TODO: characters there are in the lookup table. mem depth = 3 = 4*4*4 = 64 chars, mem depth = 4 = 4*4*4*4 = 256 chars
 
 # 4 values to represent Reward, Sucker, Temptation, and Penalty game outcomes
-v = {"CC": 0, "CD": 1, "DC": 2, "DD": 3, 0: "CC", 1: "CD", 2: "DC", 3: "DD"}
+v = {"CC": 2, "DC": 0, "CD": 3, "DD": 1, 2: "CC", 0: "DC", 3: "CD", 1: "DD"}
 
 
 # noinspection PyMethodMayBeStatic
@@ -17,10 +17,7 @@ class Player:
     # strategy: Reference to function from strategy.py to denote which strategy this player will use
     # strat_name: Holds strategy name as string
     # flag, flag_2: Flags used by the different strategies
-
     # lut: Look up table to hold encoding string
-    lut = ""
-
     # strategy_reference: Choose random function from list if one is not supplied in params
     strategy_reference = ["tft",
                           "tf2t",
@@ -29,42 +26,60 @@ class Player:
                           "all_d",
                           "all_c"]
 
-    # fitness: Holds current fitness level
-    fitness = 0
+    def __init__(self, strat="", lut=""):
 
-    def __init__(self, strat=""):
-        self.strat_name = strat
+        # fitness: Holds current fitness level
+        self.fitness = 0
 
-        self.hist = [] * 3
+        self.lut = lut
 
-        # Switch statement to set flags, strategy function, and lookup table based on strat
+        # Switch statement to set strategy function, and lookup table based on strat
         match strat:
             case "tft":
-                self.strategy = self.__tft
                 self.lut = "CDCDCDCDCDCDCDCDCDCDCDCDCDCDCDCDCDCDCDCDCDCDCDCDCDCDCDCDCDCDCDCD"
-                self.flag = False
+                self.strategy = self.__tft
+
             case "tf2t":
-                self.strategy = self.__tf2t
                 self.lut = "CCCCCDCDCCCCCDCDCCCCCDCDCCCCCDCDCCCCCDCDCCCCCDCDCCCCCDCDCCCCCDCD"
-                self.flag = False
-                self.flag_2 = False
+                self.strategy = self.__tf2t
+
             case "stft":
                 self.lut = "CDCDCDCDCDCDCDCDCDCDCDCDCDCDCDCDCDCDCDCDCDCDCDCDCDCDCDCDCDCDCDCD"
                 self.strategy = self.__stft
-                self.flag = False
+
+            case "all_d":
+                self.lut = "D" * 64
+                self.strategy = self.__all_d
+
+            case "all_c":
+                self.lut = "C" * 64
+                self.strategy = self.__all_c
+
             case "random_choice":
+                self.lut = ''
                 for x in range(0, 64):
                     self.lut += "C" if random.randint(0, 1) == 0 else "D"
                 self.strategy = self.__random_choice
-            case "all_d":
-                self.lut = "DDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDD"
-                self.strategy = self.__all_d
-            case "all_c":
-                self.lut = "CCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCC"
-                self.strategy = self.__all_c
+
+            case "inherited":
+                # Checking validity of lut value
+                if lut == "" or len(lut) < 64:
+                    raise ValueError(
+                        "Invalid Encoding String. Must be 64 characters long and only consist of Cs and Ds")
+                else:
+                    self.lut = lut
+
+                self.strategy = self.__custom
+
             case _:
                 raise ValueError("Invalid Strategy type. Valid choices: tft, tf2t, stft, random_choice, "
                                  "all_d, all_c")
+
+        self.strat_name = strat
+        self.hist = [] * 3
+
+    def __str__(self):
+        return "Player: {x:<8}, {y:<16}, {z:<72}".format(x=self.fitness, y=self.strat_name, z=self.lut)
 
     # Tit for Tat: On first turn cooperate, every turn after always play the opponent's last move
     def __tft(self):
@@ -130,11 +145,17 @@ class Player:
     def __random_choice(self):
         return self.lut[random.randint(0, 63)]
 
-    # Function to prepare for next round by resetting flags and clearing fitness
-    def prepare(self):
-        self.flag = False
-        self.flag_2 = False
-        self.fitness = 0
+    # Only cooperate
+    def __custom(self):
+        s = ''
+
+        if len(self.hist) == 0:
+            return self.lut[0]
+
+        for x in self.hist:
+            s += str(x)
+
+        return self.lut[int(s, 4)]
 
     # Update the history when a turn is played
     # Make sure the list is not full before adding a new one
@@ -156,16 +177,3 @@ class Player:
                     s += "C" if random.randint(0, 1) == 0 else "D"
                     print("Res: ", s)
                     p.update_history(s)
-
-    # Get encoding string
-    def get_encoding_string(self):
-        p = self
-        s = ''
-        for x in range(4):
-            for y in range(4):
-                for z in range(4):
-                    p.update_history(v[x])
-                    p.update_history(v[y])
-                    p.update_history(v[z])
-                    s += p.strategy()
-        return s
