@@ -34,7 +34,8 @@ class Population:
                  strategy_selector='',
                  sel_type="tournament",
                  crossover_chance=0.99,
-                 mutation_chance=0.01):
+                 mutation_chance=0.01,
+                 mem=3):
 
         # Set mutation chance
         self.mutation_chance = mutation_chance
@@ -61,22 +62,22 @@ class Population:
 
             # random_strats: Choose random strategy for all Players
             case 'random_strats':
-                self.players = [Player(strat=self.strategy_reference[randint(0, 5)]) for _ in range(0, n_players)]
+                self.players = [Player(strat=self.strategy_reference[randint(0, 5)], mem=mem) for _ in range(0, n_players)]
 
             # all_tft: All Players use tft strategy
             case 'all_tft':
-                self.players = [Player(strat='tft') for _ in range(0, n_players)]
+                self.players = [Player(strat='tft') for _ in range(0, n_players, mem=mem)]
 
             # even_tft_random: Even split of tft and random_choice Players
             case 'even_tft_random':
                 half_one = math.floor(n_players/2)
                 half_two = n_players - half_one
-                self.players = [Player(strat=self.strategy_reference[randint(0, 7)]) for _ in range(0, half_one)]
+                self.players = [Player(strat=self.strategy_reference[randint(0, 7)], mem=mem) for _ in range(0, half_one)]
                 for x in range(0, half_two):
                     self.players.append(Player(strat='tft'))
 
             case 'random_chance':
-                self.players = [Player(strat='random_choice') for _ in range(0, n_players)]
+                self.players = [Player(strat='random_choice', mem=mem) for _ in range(0, n_players)]
 
             # Catch all to ensure strategy_selector is valid
             case _:

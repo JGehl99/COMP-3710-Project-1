@@ -10,7 +10,8 @@ if __name__ == '__main__':
                      strategy_selector='random_strats',
                      sel_type="tournament",
                      crossover_chance=0.99,
-                     mutation_chance=0.01)
+                     mutation_chance=0.01,
+                     mem=3)
     n_gens = 200
 
     for x in range(0, n_gens):

@@ -18,8 +18,8 @@ def play_cycle(pop):
 def play_round(p1, p2):
     for x in range(0, 64):
         play_game(p1, p2)
-    p1.hist = [] * 3
-    p2.hist = [] * 3
+    p1.hist = [] * p1.mem
+    p2.hist = [] * p2.mem
 
 
 def play_game(p1, p2):
@@ -56,7 +56,7 @@ def crossover(parents, mutation_chance, crossover_chance):
 
     # Don't crossover sometimes
     if crossover_chance < random():
-        return Player(strat='inherited', lut=parents[0].lut), Player(strat='inherited', lut=parents[0].lut)
+        return Player(strat='inherited', mem=parents[0].mem, lut=parents[0].lut), Player(strat='inherited', mem=parents[0].mem, lut=parents[0].lut)
 
     c1_lut = parents[0].lut[:crossover_point] + parents[1].lut[crossover_point:]
     c2_lut = parents[1].lut[:crossover_point] + parents[0].lut[crossover_point:]
@@ -73,7 +73,7 @@ def crossover(parents, mutation_chance, crossover_chance):
             else:
                 c2_lut = c2_lut[:x] + 'D' + c2_lut[x + 1:]
 
-    return Player(strat='inherited', lut=c1_lut), Player(strat='inherited', lut=c2_lut)
+    return Player(strat='inherited', mem=parents[0].mem, lut=c1_lut), Player(strat='inherited', mem=parents[0].mem, lut=c2_lut)
 
 
 # Generate encoding string
@@ -117,8 +117,8 @@ def __gen_tft(hist):
             return 'D'
         else:
             return 'C'
-    elif len(hist) == 3:
-        if hist[2] == 'CD' or hist[2] == 'DD':
+    else:
+        if hist[len(hist) - 1] == 'CD' or hist[len(hist) - 1] == 'DD':
             return 'D'
         else:
             return 'C'
@@ -134,8 +134,8 @@ def __gen_tf2t(hist):
             return 'D'
         else:
             return 'C'
-    elif len(hist) == 3:
-        if (hist[1] == 'CD' or hist[1] == 'DD') and (hist[2] == 'CD' or hist[2] == 'DD'):
+    else:
+        if (hist[len(hist) - 2] == 'CD' or hist[len(hist) - 2] == 'DD') and (hist[len(hist) - 1] == 'CD' or hist[len(hist) - 1] == 'DD'):
             return 'D'
         else:
             return 'C'
@@ -154,8 +154,8 @@ def __gen_stft(hist):
             return 'D'
         else:
             return 'C'
-    elif len(hist) == 3:
-        if hist[2] == 'CD' or hist[2] == 'DD':
+    else:
+        if hist[len(hist) - 1] == 'CD' or hist[len(hist) - 1] == 'DD':
             return 'D'
         else:
             return 'C'

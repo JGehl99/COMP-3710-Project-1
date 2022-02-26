@@ -1,11 +1,6 @@
 import random
 
 
-# TODO: Allow for modifiable memory depth, currently set to 3
-# TODO: To do this, the lookup tables will have to be generated on construction (or pregenerate and place in a file)
-# TODO: Allow self.hist to be set to a specific length, this will determine how many
-# TODO: characters there are in the lookup table. mem depth = 3 = 4*4*4 = 64 chars, mem depth = 4 = 4*4*4*4 = 256 chars
-
 # 4 values to represent Reward, Sucker, Temptation, and Penalty game outcomes
 v = {"CC": 2, "DC": 0, "CD": 3, "DD": 1, 2: "CC", 0: "DC", 3: "CD", 1: "DD"}
 
@@ -26,46 +21,55 @@ class Player:
                           "all_d",
                           "all_c"]
 
-    def __init__(self, strat="", lut=""):
+    def __init__(self, strat="", mem=3, lut=""):
 
         # fitness: Holds current fitness level
         self.fitness = 0
 
         self.lut = lut
 
+        self.mem = mem
+
         # Switch statement to set strategy function, and lookup table based on strat
         match strat:
             case "tft":
-                self.lut = "CDCDCDCDCDCDCDCDCDCDCDCDCDCDCDCDCDCDCDCDCDCDCDCDCDCDCDCDCDCDCDCD"
+                #self.lut = "CDCDCDCDCDCDCDCDCDCDCDCDCDCDCDCDCDCDCDCDCDCDCDCDCDCDCDCDCDCDCDCD"
+                for x in range(0, (4 ** self.mem)):
+                    self.lut += "C" if x % 2 == 0 else "D"
                 self.strategy = self.__tft
 
             case "tf2t":
-                self.lut = "CCCCCDCDCCCCCDCDCCCCCDCDCCCCCDCDCCCCCDCDCCCCCDCDCCCCCDCDCCCCCDCD"
+                #self.lut = "CCCCCDCDCCCCCDCDCCCCCDCDCCCCCDCDCCCCCDCDCCCCCDCDCCCCCDCDCCCCCDCD"
+                while len(self.lut) < (4 ** self.mem):
+                    self.lut += "CCCCCDCD"
+                self.lut = self.lut[0:4 ** self.mem]
                 self.strategy = self.__tf2t
 
             case "stft":
-                self.lut = "CDCDCDCDCDCDCDCDCDCDCDCDCDCDCDCDCDCDCDCDCDCDCDCDCDCDCDCDCDCDCDCD"
+                #self.lut = "CDCDCDCDCDCDCDCDCDCDCDCDCDCDCDCDCDCDCDCDCDCDCDCDCDCDCDCDCDCDCDCD"
+                for x in range(0, (4 ** self.mem)):
+                    self.lut += "C" if x % 2 == 0 else "D"
                 self.strategy = self.__stft
 
             case "all_d":
-                self.lut = "D" * 64
+                self.lut = "D" * (4 ** self.mem)
                 self.strategy = self.__all_d
 
             case "all_c":
-                self.lut = "C" * 64
+                self.lut = "C" * (4 ** self.mem)
                 self.strategy = self.__all_c
 
             case "random_choice":
                 self.lut = ''
-                for x in range(0, 64):
+                for x in range(0, (4 ** self.mem)):
                     self.lut += "C" if random.randint(0, 1) == 0 else "D"
                 self.strategy = self.__random_choice
 
             case "inherited":
                 # Checking validity of lut value
-                if lut == "" or len(lut) < 64:
+                if lut == "" or len(lut) != (4 ** self.mem):
                     raise ValueError(
-                        "Invalid Encoding String. Must be 64 characters long and only consist of Cs and Ds")
+                        "Invalid Encoding String. Must be proper length and only consist of Cs and Ds: " + str(self.mem))
                 else:
                     self.lut = lut
 
@@ -76,7 +80,7 @@ class Player:
                                  "all_d, all_c")
 
         self.strat_name = strat
-        self.hist = [] * 3
+        self.hist = [] * self.mem
 
     def __str__(self):
         return "Player: {x:<8}, {y:<16}, {z:<72}".format(x=self.fitness, y=self.strat_name, z=self.lut)
@@ -143,9 +147,9 @@ class Player:
 
     # Choose randomly from lut
     def __random_choice(self):
-        return self.lut[random.randint(0, 63)]
+        return self.lut[random.randint(0, (4 ** self.mem) - 1)]
 
-    # Only cooperate
+    # Custom
     def __custom(self):
         s = ''
 
@@ -161,7 +165,7 @@ class Player:
     # Make sure the list is not full before adding a new one
     def update_history(self, str_=""):
 
-        if len(self.hist) < 3:
+        if len(self.hist) < self.mem:
             self.hist.append(v[str_])
         else:
             self.hist.pop(0)
