@@ -43,7 +43,7 @@ class HillClimber:
         # Give a message if the hill climbing has not yet been performed.
         if self.top_player is None:
             return 'Hill climbing has not yet been performed.'
-        return 'Hill climbing result: ' + self.top_player.lut + ' | Average score: ' + str(self.top_player.fitness);
+        return f'Hill Climbing | Score: {self.top_player.fitness} | LUT: {self.top_player.lut}'
 
     """
     Perform hill climbing.
@@ -69,7 +69,7 @@ class HillClimber:
             for x in range(0, (4 ** self.mem)):
                 starting_lut += "C" if random.randint(0, 1) == 0 else "D"
             if self.debug:
-                print('Attempt ' + str(attempt + 1) + ' of ' + str(self.attempts) + '\t|Starting LUT: ' + starting_lut)
+                print(f'Attempt {attempt + 1} of {self.attempts}\t| Starting LUT {starting_lut}')
 
             # Loop so long as we have an increasing score, or we have side steps remaining.
             keep_climbing = True
@@ -104,14 +104,14 @@ class HillClimber:
                     # If this LUT was already tested, simply continue to the next one to not waste time.
                     if member_lut in self.previous_luts:
                         if self.debug:
-                            print('Attempt ' + str(attempt + 1) + ' of ' + str(self.attempts) + ' member ' + str( i + 2) + ' of ' + str(len(starting_lut) + 1) + '\t| LUT: ' + member_lut + ' already tested.')
+                            print(f'Attempt {attempt + 1} of {self.attempts} member {i + 2} of {len(starting_lut) + 1}\t| LUT: {member_lut} already tested.')
                         continue
 
                     # Add this LUT to the list of all previously tested LUTs, so we do not waste time in the future.
                     self.previous_luts.append(member_lut)
 
                     if self.debug:
-                        print('Attempt ' + str(attempt + 1) + ' of ' + str(self.attempts) + ' member ' + str(i + 2) + ' of ' + str(len(starting_lut) + 1) + '\t| LUT: ' + member_lut)
+                        print(f'Attempt {attempt + 1} of {self.attempts} member {i + 2} of {len(starting_lut) + 1}\t| LUT: {member_lut}')
 
                     # Face off against every type of pre-defined strategy.
                     score = 0
@@ -145,12 +145,17 @@ class HillClimber:
                         # Add up the cumulative score against all different opponents.
                         score += hill_climber.fitness
                         if self.debug:
-                            print('Attempt ' + str(attempt + 1) + ' of ' + str(self.attempts) + ' member ' + str(i + 2) + ' of ' + str(len(starting_lut) + 1) + '\t| ' + strategy + '\t| Score: ' + str(hill_climber.fitness) + '\t| Cumulative Score: ' + str(score))
+                            print(f'Attempt {attempt + 1} of {self.attempts} member {i + 2} of {len(starting_lut) + 1}\t| {strategy}\t| Score: {hill_climber.fitness}\t| Cumulative: {score}')
 
                     # After having played all opponents, get the average score against all of them.
                     score /= 5
                     if self.debug:
-                        print('Attempt ' + str(attempt + 1) + ' of ' + str(self.attempts) + ' member ' + str(i + 2) + ' of ' + str(len(starting_lut) + 1) + '\t| Average Score: ' + str(score))
+                        print(f'Attempt {attempt + 1} of {self.attempts} member {i + 2} of {len(starting_lut) + 1}\t| Average Score for {self.n_turns} Turns: {score}')
+
+                    # Get the average score per how many turns there were.
+                    score /= self.n_turns
+                    if self.debug:
+                        print(f'Attempt {attempt + 1} of {self.attempts} member {i + 2} of {len(starting_lut) + 1}\t| Average Score: {score}')
 
                     # If this score is the best of this current attempt, confirm to keep climbing and store values.
                     if score > attempt_score:
@@ -160,7 +165,7 @@ class HillClimber:
                         generation_player = Player(strat='inherited', lut=member_lut, mem=self.mem)
                         generation_player.fitness = score
                         if self.debug:
-                            print('Attempt ' + str(attempt + 1) + ' of ' + str(self.attempts) + ' member ' + str(i + 2) + ' of ' + str(len(starting_lut) + 1) + '\t| Score ' + str(score) + ' > Best Attempt Score')
+                            print(f'Attempt {attempt + 1} of {self.attempts} member {i + 2} of {len(starting_lut) + 1}\t| Average Score {score} > Best Attempt Score')
 
                     # Otherwise, if the score was equal to the best attempt score so far, count this as a side step.
                     # If we have enough valid side steps, count this as a promising potential approach and thus to
@@ -170,21 +175,21 @@ class HillClimber:
                         if side_steps < self.n_steps:
                             keep_climbing = True
                         if self.debug:
-                            print('Attempt ' + str(attempt + 1) + ' of ' + str(self.attempts) + ' member ' + str(i + 2) + ' of ' + str(len(starting_lut) + 1) + '\t| Score ' + str(score) + ' == Best Attempt Score ' + str(attempt_score))
+                            print(f'Attempt {attempt + 1} of {self.attempts} member {i + 2} of {len(starting_lut) + 1}\t| Average Score {score} == Best Attempt Score {attempt_score} | Steps: {side_steps} / {self.n_steps}')
 
                     # Otherwise, this score was less than the best attempt score.
                     else:
                         if self.debug:
-                            print('Attempt ' + str(attempt + 1) + ' of ' + str(self.attempts) + ' member ' + str(i + 2) + ' of ' + str(len(starting_lut) + 1) + '\t| Score ' + str(score) + ' < Best Attempt Score ' + str(attempt_score))
+                            print(f'Attempt {attempt + 1} of {self.attempts} member {i + 2} of {len(starting_lut) + 1}\t| Average Score {score} < Best Attempt Score {attempt_score}')
 
                     # If the new score is the best overall score, store it.
                     if self.top_player is None or score > self.top_player.fitness:
                         self.top_player = Player(strat='inherited', lut=starting_lut, mem=self.mem)
                         self.top_player.fitness = score
                         if self.debug:
-                            print('Attempt ' + str(attempt + 1) + ' of ' + str(self.attempts) + ' member ' + str(i + 2) + ' of ' + str(len(starting_lut) + 1) + '\t| Best Overall Score: ' + str(score))
+                            print(f'Attempt {attempt + 1} of {self.attempts} member {i + 2} of {len(starting_lut) + 1}\t| Best Overall Score: {score}')
                     elif self.debug:
-                        print('Attempt ' + str(attempt + 1) + ' of ' + str(self.attempts) + ' member ' + str(i + 2) + ' of ' + str(len(starting_lut) + 1) + '\t| Score ' + str(score) + ' <= Best Overall Score ' + str(self.top_player.fitness))
+                        print(f'Attempt {attempt + 1} of {self.attempts} member {i + 2} of {len(starting_lut) + 1}\t| Average Score {score} <= Best Overall Score {self.top_player.fitness}')
 
                 # Store the top LUT for this climbing attempt to start at on the next iteration.
                 top_lut = generation_player.lut
