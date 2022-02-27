@@ -1,9 +1,6 @@
 import random
 from GeneticAlgorithm.player import Player
 
-# 4 values to represent Reward, Sucker, Temptation, and Penalty game outcomes
-v = {"CC": 2, "DC": 0, "CD": 3, "DD": 1, 2: "CC", 0: "DC", 3: "CD", 1: "DD"}
-
 
 class HillClimber:
 
@@ -61,7 +58,6 @@ class HillClimber:
             starting_lut = ''
             top_lut = None
             side_steps = 0
-            score = 0
             attempt_score = 0
             generation_player = None
 
@@ -140,7 +136,16 @@ class HillClimber:
                             other_player_result = other_player_move + hill_climber_move
                             hill_climber.update_history(hill_climber_result)
                             other_player.update_history(other_player_result)
-                            hill_climber.fitness += v[hill_climber_result]
+
+                            # Add scores based on the results.
+                            if hill_climber_result == 'CC':
+                                hill_climber.fitness += 3
+                            elif hill_climber_result == 'CD':
+                                hill_climber.fitness += 0
+                            elif hill_climber_result == 'DC':
+                                hill_climber.fitness += 5
+                            else:
+                                hill_climber.fitness += 1
 
                         # Add up the cumulative score against all different opponents.
                         score += hill_climber.fitness
