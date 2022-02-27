@@ -66,7 +66,7 @@ class Population:
 
             # all_tft: All Players use tft strategy
             case 'all_tft':
-                self.players = [Player(strat='tft') for _ in range(0, n_players, mem=mem)]
+                self.players = [Player(strat='tft', mem=mem) for _ in range(0, n_players, mem=mem)]
 
             # even_tft_random: Even split of tft and random_choice Players
             case 'even_tft_random':
@@ -74,7 +74,7 @@ class Population:
                 half_two = n_players - half_one
                 self.players = [Player(strat=self.strategy_reference[randint(0, 7)], mem=mem) for _ in range(0, half_one)]
                 for x in range(0, half_two):
-                    self.players.append(Player(strat='tft'))
+                    self.players.append(Player(strat='tft', mem=mem))
 
             case 'random_chance':
                 self.players = [Player(strat='random_choice', mem=mem) for _ in range(0, n_players)]

@@ -69,7 +69,7 @@ class Player:
                 # Checking validity of lut value
                 if lut == "" or len(lut) != (4 ** self.mem):
                     raise ValueError(
-                        "Invalid Encoding String. Must be proper length and only consist of Cs and Ds: " + str(self.mem))
+                        "Invalid Encoding String. Must only consist of Cs and Ds of have a length of " + str(self.mem))
                 else:
                     self.lut = lut
 
