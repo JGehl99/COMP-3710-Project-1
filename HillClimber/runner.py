@@ -1,4 +1,4 @@
-from HillClimbing.hill_climber import HillClimber
+from HillClimber.hill_climber import HillClimber
 
 if __name__ == '__main__':
     climber = HillClimber(
