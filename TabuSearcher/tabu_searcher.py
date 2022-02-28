@@ -24,7 +24,7 @@ class TabuSearcher:
             self,
             n_turns=64,
             mem=3,
-            n_steps=1000,
+            n_steps=100,
             n_tabu_size=100,
             tft=True,
             tf2t=True,
