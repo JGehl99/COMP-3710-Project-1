@@ -1,7 +1,7 @@
 from GeneticAlgorithm.player import Player
 
 
-class FixedStrategies:
+class StrategyComparer:
 
     """
     n_turns: The number of turns the hill climber will play each of TFT, TF2T, STFT, ALL D, and ALL C each match.

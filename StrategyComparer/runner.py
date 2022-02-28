@@ -1,7 +1,7 @@
-from FixedStrategies.fixed_strategies import FixedStrategies
+from StrategyComparer.strategy_comparer import StrategyComparer
 
 if __name__ == '__main__':
-    fixed = FixedStrategies(
+    fixed = StrategyComparer(
         n_turns=64,
         mem=3,
         tft=True,
