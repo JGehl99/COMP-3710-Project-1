@@ -2,7 +2,7 @@ from FixedStrategies.fixed_strategies import FixedStrategies
 
 if __name__ == '__main__':
     fixed = FixedStrategies(
-        n_turns=1000,
+        n_turns=64,
         mem=3,
         tft=True,
         tf2t=True,
@@ -11,7 +11,11 @@ if __name__ == '__main__':
         all_c=True,
         avg_d=True,
         avg_c=True,
-        random=True,
+        rand=True,
+        custom=[
+            'CCCDDDDCDCCDCDDDDCDCDCDDCCCCCDDCCCDDCCDCCCDDCDDDDCCCCDDCCDCCDCCC',  # Sample from training a hill climber.
+            'CDCDCCDDCDCDCDCCDCDCDDCCDDCCCDDDCDDDCCCDCCCCDDDCDCDCDDCCCDCDDCCC'  # Sample from training GA.
+        ],
         debug=False)
     fixed.play_strategies()
     print(fixed)

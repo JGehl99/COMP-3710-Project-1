@@ -6,6 +6,15 @@ class FixedStrategies:
     """
     n_turns: The number of turns the hill climber will play each of TFT, TF2T, STFT, ALL D, and ALL C each match.
     mem: The memory depth that the hill climber and all its opponents will have.
+    tft: If tit-for-tat should be performed.
+    tf2t: If tit-for-2-tat should be performed.
+    stft: If suspicious-tit-for-tat should be performed.
+    all_d: If only defect should be performed.
+    all_c: If only cooperate should be performed.
+    avg_d: If average leaning towards defect should be performed.
+    avg_c: If average leaning towards cooperate should be performed.
+    rand: If random should be performed.
+    custom: List of any custom lookup tables to perform.
     debug: If print messages should be displayed.
     """
     def __init__(
@@ -19,7 +28,8 @@ class FixedStrategies:
             all_c=True,
             avg_d=True,
             avg_c=True,
-            random=True,
+            rand=True,
+            custom=[],
             debug=False):
 
         # Ensure values are valid.
@@ -38,7 +48,8 @@ class FixedStrategies:
         self.all_c = all_c
         self.avg_d = avg_d
         self.avg_c = avg_c
-        self.random = random
+        self.rand = rand
+        self.custom = custom
         self.score_tft = None
         self.score_tf2t = None
         self.score_stft = None
@@ -47,6 +58,7 @@ class FixedStrategies:
         self.score_avg_d = None
         self.score_avg_c = None
         self.score_random = None
+        self.score_custom = []
         self.debug = debug
 
     """
@@ -70,6 +82,10 @@ class FixedStrategies:
             s += f'AVG C | {self.score_avg_c}\n'
         if self.score_random is not None:
             s += f'RAND  | {self.score_random}\n'
+        num = 1
+        for score_custom in self.score_custom:
+            s += f'C{num}    | {score_custom}\n'
+            num += 1
         return s
 
     """
@@ -84,9 +100,15 @@ class FixedStrategies:
         self.score_all_d = None
         self.score_all_c = None
         self.score_random = None
+        self.score_custom = []
+
+        # The number of players there are.
+        loops = 8
+        if self.custom is not None:
+            loops += len(self.custom)
 
         # Loop through every fixed strategy, skipping it if it should not be tested in this comparison.
-        for p1_index in range(0, 8):
+        for p1_index in range(0, loops):
             if p1_index == 0:
                 if not self.tft:
                     continue
@@ -115,15 +137,18 @@ class FixedStrategies:
                 if not self.avg_c:
                     continue
                 p1_strategy = 'avg_c'
-            else:
-                if not self.random:
+            elif p1_index == 7:
+                if not self.rand:
                     continue
                 p1_strategy = 'random_choice'
+            else:
+                p1_strategy = 'cust'
+                p1_lut = self.custom[p1_index - 8]
 
             # Loop through all opponent types once again skipping it if it should not be tested in this comparison.
             score = 0
             dividend = 0
-            for p2_index in range(0, 8):
+            for p2_index in range(0, loops):
                 if p2_index == 0:
                     if not self.tft:
                         continue
@@ -152,15 +177,26 @@ class FixedStrategies:
                     if not self.avg_c:
                         continue
                     p2_strategy = 'avg_c'
-                else:
-                    if not self.random:
+                elif p2_index == 7:
+                    if not self.rand:
                         continue
                     p2_strategy = 'random_choice'
+                else:
+                    p2_strategy = 'cust'
+                    p2_lut = self.custom[p2_index - 8]
+
+                # Since we have competed against yet another opponent, increment the dividend for getting the average.
                 dividend += 1
 
                 # Setup new players every time so they are not impacted by previous histories.
-                p1 = Player(strat=p1_strategy, mem=self.mem)
-                p2 = Player(strat=p2_strategy, mem=self.mem)
+                if p1_strategy == 'cust':
+                    p1 = Player(strat='inherited', mem=self.mem, lut=p1_lut)
+                else:
+                    p1 = Player(strat=p1_strategy, mem=self.mem)
+                if p2_strategy == 'cust':
+                    p2 = Player(strat='inherited', mem=self.mem, lut=p2_lut)
+                else:
+                    p2 = Player(strat=p2_strategy, mem=self.mem)
 
                 # Play the given number of turns.
                 for turn in range(0, self.n_turns):
@@ -211,5 +247,7 @@ class FixedStrategies:
                 self.score_avg_d = score
             elif p1_index == 6:
                 self.score_avg_c = score
-            else:
+            elif p1_index == 7:
                 self.score_random = score
+            else:
+                self.score_custom.append(score)

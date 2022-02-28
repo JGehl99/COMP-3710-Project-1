@@ -9,9 +9,33 @@ class HillClimber:
     mem: The memory depth that the hill climber and all its opponents will have.
     attempts: The number of random starting attempts the hill climbing algorithm will attempt to avoid local maxima.
     n_steps: The number of side steps a hill climber may take when reaching a plateau before giving up.
+    tft: If tit-for-tat should be performed.
+    tf2t: If tit-for-2-tat should be performed.
+    stft: If suspicious-tit-for-tat should be performed.
+    all_d: If only defect should be performed.
+    all_c: If only cooperate should be performed.
+    avg_d: If average leaning towards defect should be performed.
+    avg_c: If average leaning towards cooperate should be performed.
+    rand: If random should be performed.
+    custom: List of any custom lookup tables to perform.
     debug: If print messages should be displayed.
     """
-    def __init__(self, n_turns=64, mem=3, attempts=1, n_steps=0, debug=False):
+    def __init__(
+            self,
+            n_turns=64,
+            mem=3,
+            attempts=1,
+            n_steps=0,
+            tft=True,
+            tf2t=True,
+            stft=True,
+            all_d=True,
+            all_c=True,
+            avg_d=True,
+            avg_c=True,
+            rand=True,
+            custom=[],
+            debug=False):
 
         # Ensure values are valid.
         if n_turns < 1:
@@ -30,6 +54,15 @@ class HillClimber:
         self.n_steps = n_steps
         self.top_player = None
         self.previous_luts = []
+        self.tft = tft
+        self.tf2t = tf2t
+        self.stft = stft
+        self.all_d = all_d
+        self.all_c = all_c
+        self.avg_d = avg_d
+        self.avg_c = avg_c
+        self.rand = rand
+        self.custom = custom
         self.debug = debug
 
     """
@@ -50,6 +83,11 @@ class HillClimber:
         # Reset parameters from any previous hill climbs.
         self.top_player = None
         self.previous_luts = []
+
+        # The number of players there are.
+        loops = 9
+        if self.custom is not None:
+            loops += len(self.custom)
 
         # Loop for the given attempts.
         for attempt in range(0, self.attempts):
@@ -111,29 +149,55 @@ class HillClimber:
 
                     # Face off against every type of pre-defined strategy.
                     score = 0
-                    for opponent in range(0, 8):
+                    dividend = 0
+                    for opponent in range(0, loops):
                         if opponent == 0:
+                            if not self.tft:
+                                continue
                             strategy = 'tft'
                         elif opponent == 1:
+                            if not self.tf2t:
+                                continue
                             strategy = 'tf2t'
                         elif opponent == 2:
+                            if not self.stft:
+                                continue
                             strategy = 'stft'
                         elif opponent == 3:
+                            if not self.all_d:
+                                continue
                             strategy = 'all_d'
                         elif opponent == 4:
+                            if not self.all_c:
+                                continue
                             strategy = 'all_c'
                         elif opponent == 5:
+                            if not self.avg_d:
+                                continue
                             strategy = 'avg_d'
                         elif opponent == 6:
+                            if not self.avg_c:
+                                continue
                             strategy = 'avg_c'
-                        else:
+                        elif opponent == 7:
+                            if not self.rand:
+                                continue
+                            strategy = 'random_choice'
+                        elif opponent == 8:
                             strategy = 'self'
+                        else:
+                            strategy = 'cust'
+                            opponent_lut = self.custom[opponent - 8]
+
+                        dividend += 1
 
                         # Set up the players.
                         # Reset the hill climber every time, so it is not impacted by the history of its last match.
                         hill_climber = Player(strat='inherited', lut=member_lut, mem=self.mem)
-                        if strategy is 'self':
+                        if strategy == 'self':
                             other_player = Player(strat='inherited', lut=member_lut, mem=self.mem)
+                        elif strategy == 'cust':
+                            other_player = Player(start='inherited', lut=opponent_lut, mem=self.mem)
                         else:
                             other_player = Player(strat=strategy, mem=self.mem)
 
@@ -162,7 +226,7 @@ class HillClimber:
                             print(f'Attempt {attempt + 1} of {self.attempts} member {i + 2} of {len(starting_lut) + 1}\t| {strategy}\t| Score: {hill_climber.fitness}\t| Cumulative: {score}')
 
                     # After having played all opponents, get the average score against all of them.
-                    score /= 8
+                    score /= dividend
                     if self.debug:
                         print(f'Attempt {attempt + 1} of {self.attempts} member {i + 2} of {len(starting_lut) + 1}\t| Average Score for {self.n_turns} Turns: {score}')
 
