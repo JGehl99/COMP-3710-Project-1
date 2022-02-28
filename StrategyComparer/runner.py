@@ -13,8 +13,9 @@ if __name__ == '__main__':
         avg_c=True,
         rand=True,
         custom=[
-            'CCCDDDDCDCCDCDDDDCDCDCDDCCCCCDDCCCDDCCDCCCDDCDDDDCCCCDDCCDCCDCCC',  # Sample from training a hill climber.
-            'CDCDCCDDCDCDCDCCDCDCDDCCDDCCCDDDCDDDCCCDCCCCDDDCDCDCDDCCCDCDDCCC'  # Sample from training GA.
+            'CDCDCCDDCDCDCDCCDCDCDDCCDDCCCDDDCDDDCCCDCCCCDDDCDCDCDDCCCDCDDCCC',  # Sample from genetic algorithm.
+            'CCCDDDDCDCCDCDDDDCDCDCDDCCCCCDDCCCDDCCDCCCDDCDDDDCCCCDDCCDCCDCCC',  # Sample from hill climbing.
+            'DCDDCCDDDDDDCCCDCCDCDCDCDCCCCCCCCCCCDDCDCCCCCCDDDCDCCCDCDDCCDDCC'  # Sample from tabu search.
         ],
         debug=False)
     fixed.play_strategies()

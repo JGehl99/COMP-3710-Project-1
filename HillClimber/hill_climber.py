@@ -189,6 +189,7 @@ class HillClimber:
                             strategy = 'cust'
                             opponent_lut = self.custom[opponent - 8]
 
+                        # Since we have competed against yet another opponent, increment the dividend for getting the average.
                         dividend += 1
 
                         # Set up the players.
