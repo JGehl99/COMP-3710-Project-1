@@ -111,7 +111,7 @@ class HillClimber:
 
                     # Face off against every type of pre-defined strategy.
                     score = 0
-                    for opponent in range(0, 5):
+                    for opponent in range(0, 8):
                         if opponent == 0:
                             strategy = 'tft'
                         elif opponent == 1:
@@ -120,13 +120,22 @@ class HillClimber:
                             strategy = 'stft'
                         elif opponent == 3:
                             strategy = 'all_d'
-                        else:
+                        elif opponent == 4:
                             strategy = 'all_c'
+                        elif opponent == 5:
+                            strategy = 'avg_d'
+                        elif opponent == 6:
+                            strategy = 'avg_c'
+                        else:
+                            strategy = 'self'
 
                         # Set up the players.
                         # Reset the hill climber every time, so it is not impacted by the history of its last match.
                         hill_climber = Player(strat='inherited', lut=member_lut, mem=self.mem)
-                        other_player = Player(strat=strategy, mem=self.mem)
+                        if strategy is 'self':
+                            other_player = Player(strat='inherited', lut=member_lut, mem=self.mem)
+                        else:
+                            other_player = Player(strat=strategy, mem=self.mem)
 
                         # Play the given number of turns.
                         for turn in range(0, self.n_turns):
@@ -153,7 +162,7 @@ class HillClimber:
                             print(f'Attempt {attempt + 1} of {self.attempts} member {i + 2} of {len(starting_lut) + 1}\t| {strategy}\t| Score: {hill_climber.fitness}\t| Cumulative: {score}')
 
                     # After having played all opponents, get the average score against all of them.
-                    score /= 5
+                    score /= 8
                     if self.debug:
                         print(f'Attempt {attempt + 1} of {self.attempts} member {i + 2} of {len(starting_lut) + 1}\t| Average Score for {self.n_turns} Turns: {score}')
 

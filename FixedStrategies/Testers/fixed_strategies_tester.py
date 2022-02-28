@@ -9,6 +9,8 @@ if __name__ == '__main__':
         stft=True,
         all_d=True,
         all_c=True,
+        avg_d=True,
+        avg_c=True,
         random=True,
         debug=False)
     fixed.play_strategies()

@@ -31,7 +31,3 @@ if __name__ == '__main__':
     player2 = Player(strat="all_c")
 
     play(player1, player2, 10)
-
-    # p = Player(strat="random_choice")
-    # p.test_against_random()
-    # print(p.get_encoding_string())
