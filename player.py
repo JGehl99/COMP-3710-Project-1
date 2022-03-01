@@ -4,23 +4,8 @@ import random
 # 4 values to represent Reward, Sucker, Temptation, and Penalty game outcomes
 v = {'CC': 2, 'DC': 0, 'CD': 3, 'DD': 1, 2: 'CC', 0: 'DC', 3: 'CD', 1: 'DD'}
 
-"""
-strategy: Reference to function from strategy.py to denote which strategy this player will use.
-strat_name: Strategy name as string.
-lut: Look up table to hold encoding string.
-mem: The memory depth.
-hist: The move history.
-fitness: Fitness level.
-strategy_reference: Choose random function from list if one is not supplied in params.
-"""
-class Player:
-    strategy_reference = ['tft',
-                          'tf2t',
-                          'stft',
-                          'random_choice',
-                          'all_d',
-                          'all_c']
 
+class Player:
     """
     strat: Strategy name as string.
     mem: The memory depth.
@@ -72,15 +57,13 @@ class Player:
                 self.strategy = self.__custom
 
             case 'avg_d':
-                # THIS DOES NOT USE A LOOKUP TABLE SO THIS IS NOT REPRESENTATIVE OF THIS. TODO MAKE ONE FOR THIS.
-                # AS SUCH THIS IS NOT IN THE STRATEGY REFERENCE LIST YET FOR USE WITH THE GENETIC ALGORITHMS.
+                # THIS DOES NOT USE A LOOKUP TABLE SO THIS IS NOT REPRESENTATIVE OF THIS.
                 for x in range(0, (4 ** self.mem)):
                     self.lut += 'C' if x % 2 == 0 else 'D'
                 self.strategy = self.__avg_d
 
             case 'avg_c':
-                # THIS DOES NOT USE A LOOKUP TABLE SO THIS IS NOT REPRESENTATIVE OF THIS. TODO MAKE ONE FOR THIS.
-                # AS SUCH THIS IS NOT IN THE STRATEGY REFERENCE LIST YET FOR USE WITH THE GENETIC ALGORITHMS.
+                # THIS DOES NOT USE A LOOKUP TABLE SO THIS IS NOT REPRESENTATIVE OF THIS.
                 for x in range(0, (4 ** self.mem)):
                     self.lut += 'C' if x % 2 == 0 else 'D'
                 self.strategy = self.__avg_c
@@ -96,7 +79,7 @@ class Player:
 
     """
     Tit for Tat
-    On first turn cooperate, every turn after always play the opponent's last move
+    On first turn cooperate, every turn after always play the opponent's last move.
     """
     def __tft(self):
         if len(self.hist) == 0:
@@ -108,7 +91,7 @@ class Player:
 
     """
     Tit for 2 Tat
-    On first 2 turns cooperate, then if the opponent's two previous moves are defect, then play defect
+    On first 2 turns cooperate, then if the opponent's two previous moves are defect, then play defect.
     """
     def __tf2t(self):
         if len(self.hist) < 2:
@@ -120,7 +103,7 @@ class Player:
 
     """
     Suspicious Tit for Tat
-    Defect on first turn, then every turn after that play opponent's last move
+    Defect on first turn, then every turn after that play opponent's last move.
     """
     def __stft(self):
         if len(self.hist) == 0:
@@ -149,7 +132,7 @@ class Player:
         return 'C' if random.randint(0, 1) else 'D'
 
     """
-    Play what the opponent has most commonly played and defecting in a case where the opponent history is 50/50
+    Play what the opponent has most commonly played and defecting in a case where the opponent history is 50/50.
     """
     def __avg_d(self):
         count = 0
@@ -159,7 +142,7 @@ class Player:
         return 'D' if count >= len(self.hist) else 'C'
 
     """
-    Play what the opponent has most commonly played and cooperating in a case where the opponent history is 50/50
+    Play what the opponent has most commonly played and cooperating in a case where the opponent history is 50/50.
     """
     def __avg_c(self):
         count = 0
@@ -180,7 +163,7 @@ class Player:
         return self.lut[int(s, 4)]
 
     """
-    Update the history when a turn is played while making sure the list is not full before adding a new one
+    Update the history when a turn is played while making sure the list is not full before adding a new one.
     """
     def update_history(self, str_=''):
         if len(self.hist) < self.mem:

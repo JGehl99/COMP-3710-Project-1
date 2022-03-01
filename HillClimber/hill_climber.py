@@ -1,11 +1,13 @@
 import random
-from GeneticAlgorithm.player import Player
+import time
+
+from player import Player
 
 
 class HillClimber:
 
     """
-    n_turns: The number of turns the hill climber will play each of TFT, TF2T, STFT, ALL D, and ALL C each match.
+    n_turns: The number of turns the hill climber will play all other strategies.
     mem: The memory depth that the hill climber and all its opponents will have.
     attempts: The number of random starting attempts the hill climbing algorithm will attempt to avoid local maxima.
     n_steps: The number of side steps a hill climber may take when reaching a plateau before giving up.
@@ -53,6 +55,7 @@ class HillClimber:
         self.attempts = attempts
         self.n_steps = n_steps
         self.top_player = None
+        self.elapsed_time = 0
         self.previous_luts = []
         self.tft = tft
         self.tf2t = tf2t
@@ -73,16 +76,19 @@ class HillClimber:
         # Give a message if the hill climbing has not yet been performed.
         if self.top_player is None:
             return 'Hill climbing has not yet been performed.'
-        return f'Hill Climbing | Score: {self.top_player.fitness} | LUT: {self.top_player.lut}'
+        return f'Hill Climbing | Time: {self.elapsed_time} | Score: {self.top_player.fitness} | LUT: {self.top_player.lut}'
 
     """
     Perform hill climbing.
     """
-    def climb_hill(self):
+    def perform(self):
 
         # Reset parameters from any previous hill climbs.
         self.top_player = None
         self.previous_luts = []
+
+        # Start the timer.
+        start_time = time.time()
 
         # The number of players there are.
         loops = 9
@@ -276,3 +282,7 @@ class HillClimber:
                     top_lut = generation_player.lut
                 else:
                     top_lut = starting_lut
+
+        # Get the elapsed time.
+        end_time = time.time()
+        self.elapsed_time = end_time - start_time

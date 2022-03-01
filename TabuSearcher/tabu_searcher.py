@@ -1,12 +1,14 @@
 import random
-from GeneticAlgorithm.player import Player
+import time
+
+from player import Player
 
 
 class TabuSearcher:
 
     """
-    n_turns: The number of turns the hill climber will play each of TFT, TF2T, STFT, ALL D, and ALL C each match.
-    mem: The memory depth that the hill climber and all its opponents will have.
+    n_turns: The number of turns the tabu searcher will play each of TFT, TF2T, STFT, ALL D, and ALL C each match.
+    mem: The memory depth that the tabu searcher and all its opponents will have.
     n_steps: The number of steps the algorithm will take.
     n_tabu_size: How many lookup tables can be in the tabu list with a size of zero meaning unlimited.
     tft: If tit-for-tat should be performed.
@@ -53,6 +55,7 @@ class TabuSearcher:
         self.n_steps = n_steps
         self.n_tabu_size = n_tabu_size
         self.top_player = None
+        self.elapsed_time = 0
         self.tft = tft
         self.tf2t = tf2t
         self.stft = stft
@@ -72,15 +75,18 @@ class TabuSearcher:
         # Give a message if the tabu search has not yet been performed.
         if self.top_player is None:
             return 'Tabu search has not yet been performed.'
-        return f'Tabu Search | Score: {self.top_player.fitness} | LUT: {self.top_player.lut}'
+        return f'Tabu Search | Time: {self.elapsed_time} | Score: {self.top_player.fitness} | LUT: {self.top_player.lut}'
 
     """
-    Perform hill climbing.
+    Perform tabu searcher.
     """
-    def tabu_search(self):
+    def perform(self):
 
-        # Reset parameters from any previous hill climbs.
+        # Reset parameters from any previous tabu searches.
         self.top_player = None
+
+        # Start the timer.
+        start_time = time.time()
 
         # The number of players there are.
         loops = 9
@@ -250,3 +256,7 @@ class TabuSearcher:
             tabu_list.append(best_player.lut)
             if len(tabu_list) > self.n_tabu_size:
                 tabu_list.pop(0)
+
+        # Get the elapsed time.
+        end_time = time.time()
+        self.elapsed_time = end_time - start_time

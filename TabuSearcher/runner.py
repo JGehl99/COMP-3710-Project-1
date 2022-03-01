@@ -16,5 +16,5 @@ if __name__ == '__main__':
         rand=True,
         custom=[],
         debug=False)
-    tabu.tabu_search()
+    tabu.perform()
     print(tabu)

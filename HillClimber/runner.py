@@ -16,5 +16,5 @@ if __name__ == '__main__':
         rand=True,
         custom=[],
         debug=False)
-    climber.climb_hill()
+    climber.perform()
     print(climber)

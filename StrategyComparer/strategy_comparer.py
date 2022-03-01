@@ -1,11 +1,11 @@
-from GeneticAlgorithm.player import Player
+from player import Player
 
 
 class StrategyComparer:
 
     """
-    n_turns: The number of turns the hill climber will play each of TFT, TF2T, STFT, ALL D, and ALL C each match.
-    mem: The memory depth that the hill climber and all its opponents will have.
+    n_turns: The number of turns each strategy will place each other.
+    mem: The memory depth that each strategy and all its opponents will have.
     tft: If tit-for-tat should be performed.
     tf2t: If tit-for-2-tat should be performed.
     stft: If suspicious-tit-for-tat should be performed.
@@ -21,6 +21,7 @@ class StrategyComparer:
             self,
             n_turns=64,
             mem=3,
+            decimal_spaces=3,
             tft=True,
             tf2t=True,
             stft=True,
@@ -41,6 +42,7 @@ class StrategyComparer:
         # Set parameters.
         self.n_turns = n_turns
         self.mem = mem
+        self.decimal_spaces = decimal_spaces
         self.tft = tft
         self.tf2t = tf2t
         self.stft = stft
@@ -62,36 +64,45 @@ class StrategyComparer:
         self.debug = debug
 
     """
-    Get the results for all fixed strategies.
+    Get the results for all strategies.
     """
     def __str__(self):
         s = f'Results with {self.n_turns} turns and memory depth {self.mem}:\n'
         if self.score_tft is not None:
-            s += f'TFT   | {self.score_tft}\n'
+            n = self.score_tft if self.decimal_spaces < 0 else round(self.score_tft, self.decimal_spaces)
+            s += f'TFT   | {n}\n'
         if self.score_tf2t is not None:
-            s += f'TF2T  | {self.score_tf2t}\n'
+            n = self.score_tf2t if self.decimal_spaces < 0 else round(self.score_tf2t, self.decimal_spaces)
+            s += f'TF2T  | {n}\n'
         if self.score_stft is not None:
-            s += f'STFT  | {self.score_stft}\n'
+            n = self.score_stft if self.decimal_spaces < 0 else round(self.score_stft, self.decimal_spaces)
+            s += f'STFT  | {n}\n'
         if self.score_all_d is not None:
-            s += f'ALL D | {self.score_all_d}\n'
+            n = self.score_all_d if self.decimal_spaces < 0 else round(self.score_all_d, self.decimal_spaces)
+            s += f'ALL D | {n}\n'
         if self.score_all_c is not None:
-            s += f'ALL C | {self.score_all_c}\n'
+            n = self.score_all_c if self.decimal_spaces < 0 else round(self.score_all_c, self.decimal_spaces)
+            s += f'ALL C | {n}\n'
         if self.score_avg_d is not None:
-            s += f'AVG D | {self.score_avg_d}\n'
+            n = self.score_avg_d if self.decimal_spaces < 0 else round(self.score_avg_d, self.decimal_spaces)
+            s += f'AVG D | {n}\n'
         if self.score_avg_c is not None:
-            s += f'AVG C | {self.score_avg_c}\n'
+            n = self.score_avg_c if self.decimal_spaces < 0 else round(self.score_avg_c, self.decimal_spaces)
+            s += f'AVG C | {n}\n'
         if self.score_random is not None:
-            s += f'RAND  | {self.score_random}\n'
+            n = self.score_random if self.decimal_spaces < 0 else round(self.score_random, self.decimal_spaces)
+            s += f'RAND  | {n}\n'
         num = 1
         for score_custom in self.score_custom:
-            s += f'C{num}    | {score_custom}\n'
+            n = score_custom if self.decimal_spaces < 0 else round(score_custom, self.decimal_spaces)
+            s += f'C{num}    | {n}\n'
             num += 1
         return s
 
     """
-    Test fixed strategies.
+    Run all strategies.
     """
-    def play_strategies(self):
+    def perform(self):
 
         # Reset parameters from the last attempt.
         self.score_tft = None
