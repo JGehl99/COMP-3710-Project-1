@@ -26,8 +26,8 @@ class HillClimber:
             self,
             n_turns=64,
             mem=3,
-            attempts=1,
-            n_steps=0,
+            attempts=10,
+            n_steps=10,
             tft=True,
             tf2t=True,
             stft=True,
@@ -76,7 +76,7 @@ class HillClimber:
         # Give a message if the hill climbing has not yet been performed.
         if self.top_player is None:
             return 'Hill climbing has not yet been performed.'
-        return f'Hill Climbing | Time: {self.elapsed_time} | Score: {self.top_player.fitness} | LUT: {self.top_player.lut}'
+        return f'Hill Climb\t| Memory: {self.mem}\t| Time: {self.elapsed_time}\t| Score: {self.top_player.fitness}\t| LUT: {self.top_player.lut}'
 
     """
     Perform hill climbing.
@@ -192,6 +192,8 @@ class HillClimber:
                         elif opponent == 8:
                             strategy = 'self'
                         else:
+                            if len(self.custom[opponent - 8]) != 4 ** self.mem:
+                                continue
                             strategy = 'cust'
                             opponent_lut = self.custom[opponent - 8]
 

@@ -8,8 +8,10 @@ class GeneticAlgorithm:
     """
     n_turns: The number of turns the genetic algorithm will play all other strategies.
     mem: The memory depth that the hill climber and all its opponents will have.
-    n_players: The number of agents in the player pool.
-    n_generations: The number of mutations there will be.
+    n_players: The number of agents in the genetic algorithm player pool.
+    n_generations: The number of generations in the genetic algorithm there will be.
+    mutation_chance: The chance any genome of the genetic algorithm count mutate.
+    n_elites: The number of elites in the genetic algorithm.
     tft: If tit-for-tat should be performed.
     tf2t: If tit-for-2-tat should be performed.
     stft: If suspicious-tit-for-tat should be performed.
@@ -25,10 +27,10 @@ class GeneticAlgorithm:
             self,
             n_turns=64,
             mem=3,
-            n_players=20,
-            n_generations=200,
+            n_players=50,
+            n_generations=1000,
             mutation_chance=0.01,
-            n_elites=0,
+            n_elites=5,
             tft=True,
             tf2t=True,
             stft=True,
@@ -84,7 +86,7 @@ class GeneticAlgorithm:
         # Give a message if the genetic algorithm has not yet been performed.
         if self.top_player is None:
             return 'Genetic algorithm has not yet been performed.'
-        return f'Genetic Algorithm | Time: {self.elapsed_time} | Score: {self.top_player.fitness} | LUT: {self.top_player.lut}'
+        return f'Genetic Algorithm\t| Memory: {self.mem}\t| Time: {self.elapsed_time}\t| Score: {self.top_player.fitness}\t| LUT: {self.top_player.lut}'
 
     """
     Perform tabu searcher.
@@ -159,6 +161,8 @@ class GeneticAlgorithm:
                     elif opponent == 8:
                         strategy = 'self'
                     else:
+                        if len(self.custom[opponent - 8]) != 4 ** self.mem:
+                            continue
                         strategy = 'cust'
                         opponent_lut = self.custom[opponent - 8]
 

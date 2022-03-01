@@ -6,6 +6,7 @@ class StrategyComparer:
     """
     n_turns: The number of turns each strategy will place each other.
     mem: The memory depth that each strategy and all its opponents will have.
+    decimal_spaces: The number of decimal spaces to show for the scores.
     tft: If tit-for-tat should be performed.
     tf2t: If tit-for-2-tat should be performed.
     stft: If suspicious-tit-for-tat should be performed.

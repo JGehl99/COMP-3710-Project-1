@@ -9,7 +9,7 @@ class TabuSearcher:
     """
     n_turns: The number of turns the tabu searcher will play each of TFT, TF2T, STFT, ALL D, and ALL C each match.
     mem: The memory depth that the tabu searcher and all its opponents will have.
-    n_steps: The number of steps the algorithm will take.
+    n_steps: The number of steps the tabu searcher can take.
     n_tabu_size: How many lookup tables can be in the tabu list with a size of zero meaning unlimited.
     tft: If tit-for-tat should be performed.
     tf2t: If tit-for-2-tat should be performed.
@@ -75,7 +75,7 @@ class TabuSearcher:
         # Give a message if the tabu search has not yet been performed.
         if self.top_player is None:
             return 'Tabu search has not yet been performed.'
-        return f'Tabu Search | Time: {self.elapsed_time} | Score: {self.top_player.fitness} | LUT: {self.top_player.lut}'
+        return f'Tabu Search\t| Memory: {self.mem}\t| Time: {self.elapsed_time}\t| Score: {self.top_player.fitness}\t| LUT: {self.top_player.lut}'
 
     """
     Perform tabu searcher.
@@ -182,6 +182,8 @@ class TabuSearcher:
                     elif opponent == 8:
                         strategy = 'self'
                     else:
+                        if len(self.custom[opponent - 8]) != 4 ** self.mem:
+                            continue
                         strategy = 'cust'
                         opponent_lut = self.custom[opponent - 8]
 
