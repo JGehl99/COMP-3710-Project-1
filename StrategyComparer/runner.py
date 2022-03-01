@@ -2,7 +2,7 @@ from StrategyComparer.strategy_comparer import StrategyComparer
 
 if __name__ == '__main__':
     fixed = StrategyComparer(
-        n_turns=64,
+        n_turns=1000,
         mem=3,
         tft=True,
         tf2t=True,

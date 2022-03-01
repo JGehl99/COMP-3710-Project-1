@@ -65,7 +65,7 @@ class StrategyComparer:
     Get the results for all fixed strategies.
     """
     def __str__(self):
-        s = f'Fixed strategies with {self.n_turns} turns and memory depth {self.mem}:\n'
+        s = f'Results with {self.n_turns} turns and memory depth {self.mem}:\n'
         if self.score_tft is not None:
             s += f'TFT   | {self.score_tft}\n'
         if self.score_tf2t is not None:
