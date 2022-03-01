@@ -4,7 +4,7 @@ from player import Player
 class StrategyComparer:
 
     """
-    n_turns: The number of turns each strategy will place each other.
+    n_turns: The number of turns each strategy will play each other.
     mem: The memory depth that each strategy and all its opponents will have.
     decimal_spaces: The number of decimal spaces to show for the scores.
     tft: If tit-for-tat should be performed.
