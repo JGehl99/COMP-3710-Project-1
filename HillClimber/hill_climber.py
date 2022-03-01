@@ -250,9 +250,10 @@ class HillClimber:
                     # If we have enough valid side steps, count this as a promising potential approach and thus to
                     # keep climbing.
                     elif score == attempt_score:
-                        side_steps += 1
-                        if side_steps < self.n_steps:
-                            keep_climbing = True
+                        if not keep_climbing:
+                            side_steps += 1
+                            if side_steps < self.n_steps:
+                                keep_climbing = True
                         if self.debug:
                             print(f'Attempt {attempt + 1} of {self.attempts} member {i + 2} of {len(starting_lut) + 1}\t| Average Score {score} == Best Attempt Score {attempt_score} | Steps: {side_steps} / {self.n_steps}')
 

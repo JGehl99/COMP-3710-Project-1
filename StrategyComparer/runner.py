@@ -13,8 +13,8 @@ if __name__ == '__main__':
         avg_c=True,
         rand=True,
         custom=[
-            'CDCDCCDDCDCDCDCCDCDCDDCCDDCCCDDDCDDDCCCDCCCCDDDCDCDCDDCCCDCDDCCC',  # Sample from genetic algorithm.
-            'CCCDDDDCDCCDCDDDDCDCDCDDCCCCCDDCCCDDCCDCCCDDCDDDDCCCCDDCCDCCDCCC',  # Sample from hill climbing.
+            'CDCDCDCDCCCDDDCCCDCCCCCCDDCDCCDCCCDDCCDCDCCCCCCDCCCCDCCCCCCDCCCC',  # Sample from genetic algorithm.
+            'DCDDCDCCCCDDDCDDCDCDCCDDDCCDDDDDDCCCDDDDDCCCDCCCDDDDCCCCDCDCCDCC',  # Sample from hill climbing.
             'DCDDCCDDDDDDCCCDCCDCDCDCDCCCCCCCCCCCDDCDCCCCCCDDDCDCCCDCDDCCDDCC'  # Sample from tabu search.
         ],
         debug=False)
