@@ -142,6 +142,8 @@ class StrategyComparer:
                     continue
                 p1_strategy = 'random_choice'
             else:
+                if len(self.custom[p1_index - 8]) != 4 ** self.mem:
+                    continue
                 p1_strategy = 'cust'
                 p1_lut = self.custom[p1_index - 8]
 
@@ -182,6 +184,8 @@ class StrategyComparer:
                         continue
                     p2_strategy = 'random_choice'
                 else:
+                    if len(self.custom[p2_index - 8]) != 4 ** self.mem:
+                        continue
                     p2_strategy = 'cust'
                     p2_lut = self.custom[p2_index - 8]
 

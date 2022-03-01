@@ -235,6 +235,9 @@ class TabuSearcher:
                 elif self.debug:
                     print(f'Step {step + 1} of {self.n_steps} member {i + 2} of {len(starting_lut) + 1}\t| Average Score {score} <= Best Attempt Score {best_player.fitness}')
 
+            if best_player is None:
+                continue
+
             # If the best player of a loop was the top player overall, set it.
             if self.top_player is None or best_player.fitness > self.top_player.fitness:
                 self.top_player = best_player

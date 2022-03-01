@@ -237,7 +237,7 @@ class HillClimber:
                         print(f'Attempt {attempt + 1} of {self.attempts} member {i + 2} of {len(starting_lut) + 1}\t| Average Score: {score}')
 
                     # If this score is the best of this current attempt, confirm to keep climbing and store values.
-                    if score > attempt_score:
+                    if generation_player is None or score > attempt_score:
                         keep_climbing = True
                         attempt_score = score
                         side_steps = 0
@@ -272,4 +272,7 @@ class HillClimber:
                         print(f'Attempt {attempt + 1} of {self.attempts} member {i + 2} of {len(starting_lut) + 1}\t| Average Score {score} <= Best Overall Score {self.top_player.fitness}')
 
                 # Store the top LUT for this climbing attempt to start at on the next iteration.
-                top_lut = generation_player.lut
+                if generation_player is not None:
+                    top_lut = generation_player.lut
+                else:
+                    top_lut = starting_lut

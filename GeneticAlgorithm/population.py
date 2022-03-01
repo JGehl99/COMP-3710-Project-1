@@ -1,5 +1,4 @@
 import math
-import random
 from random import randint
 from GeneticAlgorithm.player import Player, v
 

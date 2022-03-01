@@ -53,7 +53,11 @@ if __name__ == '__main__':
 
     print("\n\n\nFinal Generation:", n_gens, "\n---------------")
     play_cycle(pop)
-    [print(x) for x in pop.players]
+    best_player = None
+    for player in pop.players:
+        if best_player is None or player.fitness > best_player.fitness:
+            best_player = player
+    print(f'Genetic Algorithm | Score: {best_player.fitness} | LUT : {best_player.lut}')
 
 
 

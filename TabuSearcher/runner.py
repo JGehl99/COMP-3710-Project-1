@@ -15,6 +15,6 @@ if __name__ == '__main__':
         avg_c=True,
         rand=True,
         custom=[],
-        debug=True)
+        debug=False)
     tabu.tabu_search()
     print(tabu)
