@@ -7,3 +7,5 @@ Running the "runner.py" inside the "GeneticAlgorithm", "HillClimber", or "TabuSe
 Running the "runner.py" inside the "Looper" directory is a helper method that will attempt to optimize the prisoner's dilemma problem for the genetic, hill climb, and tabu search algorithms for multiple memory depth.
 
 Running the "runner.py" inside the "StrategyComparer" directory will play all algorithms against each other allowing for determining the best performing solutions.
+
+**The lookup tables that were generated and used in our experiment can be found in the "runner.py" file inside the "StrategyComparer" directory.**
